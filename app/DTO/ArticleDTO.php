@@ -10,12 +10,16 @@ declare(strict_types = 1);
 
 namespace App\DTO;
 
-class ArticleDTO extends BaseDTO
+use App\DTO\interfaces\ArticleDTOInterface;
+
+class ArticleDTO extends BaseDTO implements ArticleDTOInterface
 {
     private $articleId;
     private $title;
     private $description;
     private $slug;
+
+
 
     private function getArticleId()
     {

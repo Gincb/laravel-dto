@@ -30,13 +30,13 @@ class CategoryController extends Controller
     public function getPaginate(Request $request): JsonResponse
     {
         try {
-            $authors = $this->categoryService->getPaginateData((int)$request->page);
+            $categories = $this->categoryService->getPaginateData();
+
             return response()->json([
                 'status' => true,
-                'data' => $authors->getCollection(),
-                'current_page' => $authors->currentPage(),
-                'total_page' => $authors->lastPage(),
+                'data' => $categories
             ]);
+
         } catch (CategoryException $exception) {
             return response()->json(
                 [
@@ -46,11 +46,12 @@ class CategoryController extends Controller
                 ],
                 JsonResponse::HTTP_NOT_FOUND
             );
+
         } catch (\Throwable $exception) {
             return response()->json(
                 [
                     'status' => false,
-                    'message' => 'Something wrong',
+                    'message' => dd($exception),
                     'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                 ],
                 JsonResponse::HTTP_INTERNAL_SERVER_ERROR
@@ -62,10 +63,12 @@ class CategoryController extends Controller
     {
         try {
             $author = $this->categoryService->getById($id);
+
             return response()->json([
                 'success' => true,
                 'data' => $author,
             ]);
+
         } catch (ModelNotFoundException $exception) {
             logger($exception->getMessage(), [
                 'code' => $exception->getCode(),
@@ -73,6 +76,7 @@ class CategoryController extends Controller
                 'path' => $request->path(),
                 'url' => $request->url(),
             ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'No data found.',
@@ -80,6 +84,7 @@ class CategoryController extends Controller
             ], JsonResponse::HTTP_NOT_FOUND);
         } catch (\Throwable $exception) {
             dd($exception->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Something wrong.',

@@ -9,6 +9,8 @@
 namespace App\DTO;
 
 
+use App\DTO\interfaces\ArticleDTOInterface;
+
 class ArticlesDTO extends BaseDTO
 {
 
@@ -23,7 +25,7 @@ class ArticlesDTO extends BaseDTO
      * @param ArticleDTO $articleDTO
      * @return ArticlesDTO
      */
-    public function setArticle(ArticleDTO $articleDTO): ArticlesDTO
+    public function setArticle(ArticleDTOInterface $articleDTO): ArticlesDTO
     {
         $this->collectionData->push($articleDTO);
 

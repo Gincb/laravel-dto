@@ -50,7 +50,7 @@ class AuthorController extends Controller
             return response()->json(
                 [
                     'status' => false,
-                    'message' => 'Something wrong',
+                    'message' => dd($exception),
                     'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                 ],
                 JsonResponse::HTTP_INTERNAL_SERVER_ERROR

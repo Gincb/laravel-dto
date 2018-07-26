@@ -78,7 +78,7 @@ class ArticleController extends Controller
         } catch (Throwable $exception) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something wrong.',
+                'message' => dd($exception),
                 'code' => $exception->getCode(),
             ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -91,6 +91,36 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $author,
+            ]);
+        } catch (ModelNotFoundException $exception) {
+            logger($exception->getMessage(), [
+                'code' => $exception->getCode(),
+                'author-id' => $id,
+                'path' => $request->path(),
+                'url' => $request->url(),
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'No data found.',
+                'code' => $exception->getCode(),
+            ], JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Throwable $exception) {
+            dd($exception->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Something wrong.',
+                'code' => $exception->getCode(),
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function getByIdFull(Request $request, int $id): JsonResponse
+    {
+        try {
+            $articleFull = $this->articleService->getByIdFull($id);
+            return response()->json([
+                'success' => true,
+                'data' => $articleFull,
             ]);
         } catch (ModelNotFoundException $exception) {
             logger($exception->getMessage(), [

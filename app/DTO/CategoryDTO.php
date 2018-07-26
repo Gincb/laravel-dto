@@ -16,7 +16,7 @@ class CategoryDTO extends BaseDTO
     private $title;
     private $slug;
 
-    private function getCategoryId()
+    private function getCategoryId(): int
     {
         return $this->categoryId;
     }
@@ -28,7 +28,7 @@ class CategoryDTO extends BaseDTO
         return $this;
     }
 
-    private function getTitle()
+    private function getTitle(): string
     {
         return $this->title;
     }
@@ -40,7 +40,7 @@ class CategoryDTO extends BaseDTO
         return $this;
     }
 
-    private function getSlug()
+    private function getSlug(): string
     {
         return $this->slug;
     }

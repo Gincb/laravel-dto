@@ -6,7 +6,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-    class Category extends Model
+    /**
+ * App\Category
+ *
+ * @property int $id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property string $title
+ * @property string $slug
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+class Category extends Model
 {
     /**
      * @var array

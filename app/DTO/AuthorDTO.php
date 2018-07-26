@@ -15,6 +15,7 @@ class AuthorDTO extends BaseDTO
     private $authorId;
     private $firstName;
     private $lastName;
+    private $collectionData;
 
     /**
      * @param int $authorId
@@ -45,6 +46,13 @@ class AuthorDTO extends BaseDTO
     public function setLastName(string $lastName): AuthorDTO
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function setCategories(CategoriesDTO $categoriesDTO): AuthorDTO
+    {
+        $this->collectionData->push($categoriesDTO);
 
         return $this;
     }

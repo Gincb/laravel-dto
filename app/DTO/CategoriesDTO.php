@@ -22,7 +22,7 @@ class CategoriesDTO extends BaseDTO
      * @param CategoryDTO $categoryDTO
      * @return CategoriesDTO
      */
-    public function setArticle(CategoryDTO $categoryDTO): CategoriesDTO
+    public function setCategoryData(CategoryDTO $categoryDTO): CategoriesDTO
     {
         $this->collectionData->push($categoryDTO);
 
@@ -34,7 +34,7 @@ class CategoriesDTO extends BaseDTO
      */
     protected function jsonData(): array
     {
-        return[
+        return [
             'data' => $this->collectionData,
         ];
     }
