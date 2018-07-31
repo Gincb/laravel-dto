@@ -21,11 +21,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $reference_author_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereReferenceAuthorId($value)
  */
 class Author extends Model
 {
     protected $fillable = [
       'first_name',
       'last_name',
+        'reference_author_id',
     ];
 }

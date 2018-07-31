@@ -20,15 +20,16 @@ namespace App{
  * @property string $description
  * @property string $slug
  * @property int|null $author_id
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereAuthor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereUpdatedAt($value)
- * @property-read \App\author|null $authors
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereAuthor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereAuthorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereUpdatedAt($value)
+ * @property-read \App\Author|null $authors
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Category[] $categories
  */
 	class Article extends \Eloquent {}
 }
@@ -47,8 +48,30 @@ namespace App{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereUpdatedAt($value)
+ * @mixin \Eloquent
+ * @property int $reference_author_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Author whereReferenceAuthorId($value)
  */
 	class Author extends \Eloquent {}
+}
+
+namespace App{
+/**
+ * App\Category
+ *
+ * @property int $id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property string $title
+ * @property string $slug
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	class Category extends \Eloquent {}
 }
 
 namespace App{

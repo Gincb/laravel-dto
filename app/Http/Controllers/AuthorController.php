@@ -43,8 +43,8 @@ class AuthorController extends Controller
     public function store(AuthorRequest $request): RedirectResponse
     {
         Author::create([
-            'first_name' => $request->getFirst_name(),
-            'last_name' => $request->getLast_name(),
+            'first_name' => $request->getFirstname(),
+            'last_name' => $request->getLastname(),
         ]);
 
         return redirect()
