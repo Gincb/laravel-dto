@@ -6,9 +6,8 @@ namespace App\Console\Commands\ArticlesApi;
 
 use App\Author;
 use GuzzleHttp\Client;
-use Illuminate\Console\Command;
 
-class AuthorByReferenceCommand extends Command
+class AuthorByReferenceCommand extends ArticleBase
 {
     /**
      * The name and signature of the console command.
@@ -24,9 +23,6 @@ class AuthorByReferenceCommand extends Command
      */
     protected $description = 'Get author info by reference ID';
 
-    private $url;
-    private $version;
-
     /**
      * Create a new command instance.
      *
@@ -35,9 +31,6 @@ class AuthorByReferenceCommand extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->url = config('articles_api.api_url');
-        $this->version = config('articles_api.api_version');
     }
 
     /**
@@ -46,7 +39,7 @@ class AuthorByReferenceCommand extends Command
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle()
+    public function handle(): void
     {
         try {
             $client = new Client();
@@ -70,7 +63,7 @@ class AuthorByReferenceCommand extends Command
                 ]
             );
 
-            $this->info('Row update or created success with reference  author ID: ', $data->data->author_id);
+            $this->info('Row update or created success with reference author ID: ', $data->data->author_id);
 
         }catch (\Throwable $exception){
             $this->error($exception->getMessage());
@@ -80,8 +73,11 @@ class AuthorByReferenceCommand extends Command
     /**
      * @return string
      */
-    private function getCallUrl()
+    protected function getCallUrl(): string
     {
-        return sprintf('%s/%s/author/%d', $this->url, $this->version, $this->argument('reference_author_id'));
+        return strtr(':url/author/:id', [
+            ':url' => parent::getCallUrl(),
+            ':id' => $this->argument('reference_author_id')
+        ]);
     }
 }

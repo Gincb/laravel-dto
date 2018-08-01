@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
  * @property \Illuminate\Config\Repository|mixed url
  * @property \Illuminate\Config\Repository|mixed version
  */
-class AuthorListCommand extends Command
+class AuthorListCommand extends ArticleBase
 {
     /**
      * The name and signature of the console command.
@@ -36,9 +36,6 @@ class AuthorListCommand extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->url = config('articles_api.api_url');
-        $this->version = config('articles_api.api_version');
     }
 
     /**
@@ -47,7 +44,7 @@ class AuthorListCommand extends Command
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle()
+    public function handle(): void
     {
         $client = new Client();
 
@@ -61,7 +58,7 @@ class AuthorListCommand extends Command
             exit();
         }
 
-        foreach ($data->data as $row){
+        foreach ($data->data->data as $row){
             $author = $this->saveData($row);
             $this->info('Updated or created author with reference: ', $author->reference_author_id);
         }
@@ -87,8 +84,10 @@ class AuthorListCommand extends Command
     /**
      * @return string
      */
-    private function getCallUrl(): string
+    protected function getCallUrl(): string
     {
-        return sprintf('%s/%s/author', $this->url, $this->version);
+        return strtr(':url/author', [
+            ':url' => parent::getCallUrl(),
+        ]);
     }
 }

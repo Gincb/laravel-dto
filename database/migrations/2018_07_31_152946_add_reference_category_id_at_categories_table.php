@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddReferenceIdOnAuthorsTable extends Migration
+class AddReferenceCategoryIdAtCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,9 +15,11 @@ class AddReferenceIdOnAuthorsTable extends Migration
      */
     public function up(): void
     {
-        Schema::table('authors', function (Blueprint $table) {
-            $table->integer('reference_author_id')->nullable;
-        });
+        if(!Schema::hasColumn('categories', 'reference_category_id')) {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->integer('reference_category_id')->nullable();
+            });
+        }
     }
 
     /**
@@ -27,7 +29,7 @@ class AddReferenceIdOnAuthorsTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('authors', function (Blueprint $table) {
+        Schema::table('categories', function (Blueprint $table) {
             //
         });
     }

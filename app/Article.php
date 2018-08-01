@@ -29,10 +29,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereUpdatedAt($value)
  * @property-read \App\Author|null $authors
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Category[] $categories
+ * @property int|null $reference_author_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereReferenceAuthorId($value)
+ * @property int|null $reference_article_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Article whereReferenceArticleId($value)
  */
 class Article extends Model
 {
-    protected $fillable = ['title', 'description', 'slug', 'author_id'];
+    protected $fillable = ['title', 'description', 'slug', 'author_id', 'reference_article_id'];
 
     public function authors(): BelongsTo
     {

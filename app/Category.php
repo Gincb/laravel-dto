@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $reference_category_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereReferenceCategoryId($value)
  */
 class Category extends Model
 {
@@ -29,6 +31,7 @@ class Category extends Model
     protected $fillable = [
         'title',
         'slug',
+        'reference_category_id'
     ];
 
 }
