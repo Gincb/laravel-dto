@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Console\Commands\ArticlesApi;
 
-use App\Author;
+use App\Services\ClientAPI\ClientAuthorService;
 use GuzzleHttp\Client;
 
 class AuthorByReferenceCommand extends ArticleBase
@@ -23,6 +23,9 @@ class AuthorByReferenceCommand extends ArticleBase
      */
     protected $description = 'Get author info by reference ID';
 
+    /** @var ClientAuthorService */
+    private $authorService;
+
     /**
      * Create a new command instance.
      *
@@ -31,6 +34,8 @@ class AuthorByReferenceCommand extends ArticleBase
     public function __construct()
     {
         parent::__construct();
+
+        $this->authorService = app()->make(ClientAuthorService::class);
     }
 
     /**
@@ -42,28 +47,15 @@ class AuthorByReferenceCommand extends ArticleBase
     public function handle(): void
     {
         try {
-            $client = new Client();
+            $result = $this->client->request('GET', $this->getCallUrl());
 
-            $result = $client->request('GET', $this->getCallUrl());
+            $data = json_decode($result->getBody()->getContents());
 
-            $data = \GuzzleHttp\json_decode($result->getBody()->getContents());
+            $this->checkSuccess($data);
 
-            if(!$data->success){
-                $this->error($data->message);
-                exit();
-            }
+            $author = $this->authorService->saveAuthorFromObject($data->data);
 
-            Author::updateOrCreate(
-                [
-                    'first_name'=>$data->data->first_name,
-                    'last_name'=>$data->data->last_name,
-                ],
-                [
-                    'reference_author_id'=>$data->data->author_id,
-                ]
-            );
-
-            $this->info('Row update or created success with reference author ID: ', $data->data->author_id);
+            $this->info('Row update or created success with reference author ID: '. $author->id);
 
         }catch (\Throwable $exception){
             $this->error($exception->getMessage());

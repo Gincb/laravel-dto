@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         Articles List
-                        <a class="btn btn-sm btn-primary" href="{{ route('article.create') }}">{{ __('New') }}</a>
+                        <a class="btn btn-sm btn-outline-dark" href="{{ route('article.create') }}">{{ __('New') }}</a>
                     </div>
 
                     <div class="card-body">
@@ -31,9 +31,9 @@
                                     <td>{{ $article->id }}</td>
                                     <td>{{ $article->title }}</td>
                                     <td>{{ $article->slug }}</td>
-                                    <td>
-                                        <a class="btn btn-sm btn-info" href="{{ route('article.show', [$article->id]) }}">{{ __('View') }}</a>
-                                        <a class="btn btn-sm btn-success" href="{{ route('article.edit', [$article->id]) }}">{{ __('Edit') }}</a>
+                                    <td style="display: flex">
+                                        <a class="btn btn-sm btn-info" href="{{ route('article.show', [$article->id]) }}">{{ __('View') }}</a>&nbsp;
+                                        <a class="btn btn-sm btn-dark" href="{{ route('article.edit', [$article->id]) }}">{{ __('Edit') }}</a>&nbsp;
                                         <form action="{{ route('article.destroy', [$article->id]) }}" method="post">
                                             {{ csrf_field() }}
                                             {{ method_field('delete') }}

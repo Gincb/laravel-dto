@@ -30,8 +30,8 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name}}</td>
                                     <td>{{ $user->email}}</td>
-                                    <td>
-                                        <a class="btn btn-sm btn-success" href="{{ route('user.edit', [$user->id]) }}">{{ __('Edit') }}</a>
+                                    <td style="display: flex">
+                                        <a class="btn btn-sm btn-dark" href="{{ route('user.edit', [$user->id]) }}">{{ __('Edit') }}</a>&nbsp;
                                         <form action="{{ route('user.destroy', [$user->id]) }}" method="post">
                                             {{ csrf_field() }}
                                             {{ method_field('delete') }}

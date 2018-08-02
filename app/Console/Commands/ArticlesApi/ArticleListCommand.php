@@ -7,24 +7,25 @@ namespace App\Console\Commands\ArticlesApi;
 use App\Services\ClientAPI\ClientArticleService;
 
 /**
- * Class ArticleByReferenceCommand
+ * Class ArticleListCommand
  * @package App\Console\Commands\ArticlesApi
  */
-class ArticleByReferenceCommand extends ArticleBase
+class ArticleListCommand extends ArticleBase
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'articles:by-id {reference_article_id : Reference article ID}';
+    protected $signature = 'articles:list';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get articles by client article ID';
+    protected $description = 'Get articles list';
+
 
     /**
      * @var ClientArticleService
@@ -46,20 +47,27 @@ class ArticleByReferenceCommand extends ArticleBase
     /**
      * Execute the console command.
      *
+     * @param string|null $url
      * @return mixed
      */
-    public function handle(): void
+    public function handle(string $url = null): void
     {
         try {
-            $response = $this->client->get($this->getCallUrl());
+            $response = $this->client->get(($url) ? $url : $this->getCallUrl());
 
-            $result = json_decode($response->getBody()->getContents());
+            $context = json_decode($response->getBody()->getContents());
 
-            $this->checkSuccess($result);
+            $this->checkSuccess($context);
 
-            $article = $this->clientArticleService->saveArticleFromObject($result->data);
+            foreach ($context->data->data as $item){
+                $article = $this->clientArticleService->saveArticleFromObject($item);
+                $this->info('Article saved with ID: ' . $article->id);
+            }
 
-            $this->info('Article with ID '. $article->id. ' saved');
+            if($url = $context->data->next_page_url){
+                $this->handle($url);
+            }
+
         }catch(\Throwable $exception){
             $this->error($exception->getMessage());
         }
@@ -70,10 +78,10 @@ class ArticleByReferenceCommand extends ArticleBase
      */
     protected function getCallUrl(): string
     {
-        return strtr(':url/article/:id',[
+        return strtr(':url/article', [
             ':url' => parent::getCallUrl(),
-            ':id' => $this->argument('reference_article_id')
         ]);
 
     }
+
 }

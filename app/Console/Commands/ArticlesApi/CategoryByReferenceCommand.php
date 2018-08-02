@@ -2,9 +2,12 @@
 
 namespace App\Console\Commands\ArticlesApi;
 
-use App\Category;
-use GuzzleHttp\Client;
+use App\Services\ClientAPI\ClientCategoryService;
 
+/**
+ * Class CategoryByReferenceCommand
+ * @package App\Console\Commands\ArticlesApi
+ */
 class CategoryByReferenceCommand extends ArticleBase
 {
     /**
@@ -21,6 +24,9 @@ class CategoryByReferenceCommand extends ArticleBase
      */
     protected $description = 'Get category by ID';
 
+    /** @var ClientCategoryService  */
+    private $clientCategoryService;
+
     /**
      * Create a new command instance.
      *
@@ -29,6 +35,8 @@ class CategoryByReferenceCommand extends ArticleBase
     public function __construct()
     {
         parent::__construct();
+
+        $this->clientCategoryService = app()->make(ClientCategoryService::class);
     }
 
     /**
@@ -39,23 +47,16 @@ class CategoryByReferenceCommand extends ArticleBase
     public function handle(): void
     {
         try {
-            $client = new Client();
 
-            $response = $client->get($this->getCallUrl());
+            $response = $this->client->get($this->getCallUrl());
 
             $data = \GuzzleHttp\json_decode($response->getBody()->getContents());
 
-            if (!$data->success) {
-                $this->error($data->message);
-                exit();
-            }
+            $this->checkSuccess($data);
 
-            $category = Category::updateOrCreate(
-                ['slug' => $data->data->slug],
-                ['title' => $data->data->title, 'reference_category_id' => $data->data->category_id]
-            );
+            $category = $this->clientCategoryService->saveCategoryFromObject($data->data);
 
-            $this->info('Category', $category->title, 'uploaded or created successfully');
+            $this->info('Category '. $category->title. ' uploaded or created successfully');
 
         }catch(\Throwable $exception){
             $this->error($exception->getMessage());

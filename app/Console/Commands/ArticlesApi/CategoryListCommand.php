@@ -2,9 +2,12 @@
 
 namespace App\Console\Commands\ArticlesApi;
 
-use App\Category;
-use GuzzleHttp\Client;
+use App\Services\ClientAPI\ClientCategoryService;
 
+/**
+ * Class CategoryListCommand
+ * @package App\Console\Commands\ArticlesApi
+ */
 class CategoryListCommand extends ArticleBase
 {
     /**
@@ -21,34 +24,44 @@ class CategoryListCommand extends ArticleBase
      */
     protected $description = 'Get categories paginator list';
 
+    /** @var ClientCategoryService */
+    private $clientCategoryService;
+
+    /**
+     * CategoryListCommand constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+
+        $this->clientCategoryService = app()->make(ClientCategoryService::class);
     }
 
     /**
      * Execute the console command.
      *
+     * @param string|null $url
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle(): void
+    public function handle(string $url = null): void
     {
         try {
-            $client = new Client();
+            $response = $this->client->get(($url) ? $url : $this->getCallUrl());
 
-            $response = $client->request('GET', $this->getCallUrl());
+            $result = json_decode($response->getBody()->getContents());
 
-            $result = \GuzzleHttp\json_decode($response->getBody()->getContents());
+            $this->checkSuccess($result);
 
-            if(!$result->success){
-                $this->error($result->messeges);
-                exit();
-            }
             foreach($result->data->data as $row){
-                $category = $this->saveData($row);
-                $this->info('Category ', $category->title, ' update or created successfully');
+                $category = $this->clientCategoryService->saveCategoryFromObject($row);
+                $this->info('Category '. $category->title. ' updated or created successfully');
             }
+
+            if($url = $result->data->next_page_url){
+                $this->handle($url);
+            }
+
         }catch (\Throwable $exception){
             $this->error($exception->getMessage());
         }
@@ -62,17 +75,5 @@ class CategoryListCommand extends ArticleBase
         return strtr(':url/category', [
             ':url' => parent::getCallUrl(),
         ]);
-    }
-
-    /**
-     * @param \stdClass $row
-     * @return Category
-     */
-    private function saveData(\stdClass $row): Category
-    {
-        return Category::updateOrCreate(
-            ['slug'=>$row->slug],
-            ['title'=>$row->title,'reference_category_id' => $row->category_id]
-        );
     }
 }

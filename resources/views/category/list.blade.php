@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         Categories
-                        <a class="btn btn-sm btn-primary" href="{{ route('category.create') }}">{{ __('New') }}</a>
+                        <a class="btn btn-sm btn-outline-dark" href="{{ route('category.create') }}">{{ __('New') }}</a>
                     </div>
 
                     <div class="card-body">
@@ -32,7 +32,7 @@
                                     <td>{{ $category->title }}</td>
                                     <td>{{ $category->slug }}</td>
                                     <td>
-                                        <a class="btn btn-sm btn-success" href="{{ route('category.edit', [$category->id]) }}">{{ __('Edit') }}</a>
+                                        <a class="btn btn-sm btn-dark" href="{{ route('category.edit', [$category->id]) }}">{{ __('Edit') }}</a>
                                     </td>
                                 </tr>
                             @endforeach

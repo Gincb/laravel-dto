@@ -4,9 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Console\Commands\ArticlesApi;
 
-use App\Author;
+use App\Services\ClientAPI\ClientAuthorService;
 use GuzzleHttp\Client;
-use Illuminate\Console\Command;
 
 /**
  * @property \Illuminate\Config\Repository|mixed url
@@ -28,6 +27,9 @@ class AuthorListCommand extends ArticleBase
      */
     protected $description = 'Get authors list';
 
+    /** @var ClientAuthorService */
+    private $clientAuthorService;
+
     /**
      * Create a new command instance.
      *
@@ -36,49 +38,39 @@ class AuthorListCommand extends ArticleBase
     public function __construct()
     {
         parent::__construct();
+
+        $this->clientAuthorService = app()->make(ClientAuthorService::class);
     }
 
     /**
      * Execute the console command.
      *
+     * @param string|null $url
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle(): void
+    public function handle(string $url = null): void
     {
-        $client = new Client();
 
-        $result = $client->request('GET', $this->getCallUrl());
+        try {
+            $result = $this->client->get(($url) ? $url : $this->getCallUrl());
 
-        $data = \GuzzleHttp\json_decode($result->getBody()->getContents());
+            $data = json_decode($result->getBody()->getContents());
 
-        if(!$data->success){
-            logger($data->message, $data);
+            $this->checkSuccess($data);
 
-            exit();
+            foreach ($data->data->data as $row) {
+                $author = $this->clientAuthorService->saveAuthorFromObject($row);
+
+                $this->info('Updated or created author with reference: ' . $author->reference_author_id);
+            }
+
+            if ($url = $data->data->next_page_url) {
+                $this->handle($url);
+            }
+        }catch (\Throwable $exception){
+            $this->error($exception->getMessage());
         }
-
-        foreach ($data->data->data as $row){
-            $author = $this->saveData($row);
-            $this->info('Updated or created author with reference: ', $author->reference_author_id);
-        }
-    }
-
-    /**
-     * @param \stdClass $data
-     * @return Author
-     */
-    private function saveData(\stdClass $data): Author
-    {
-        return Author::updateOrCreate(
-            [
-                'first_name'=>$data->first_name,
-                'last_name' =>$data->last_name,
-            ],
-            [
-                'reference_author_id'=>$data->author_id,
-            ]
-        );
     }
 
     /**

@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         Authors List
-                        <a class="btn btn-sm btn-primary" href="{{ route('author.create') }}">{{ __('New') }}</a>
+                        <a class="btn btn-sm btn-outline-dark" href="{{ route('author.create') }}">{{ __('New') }}</a>
                     </div>
 
                     <div class="card-body">
